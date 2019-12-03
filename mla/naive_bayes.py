@@ -1,3 +1,5 @@
+# coding:utf-8
+
 import numpy as np
 from mla.base import BaseEstimator
 from mla.neuralnet.activations import softmax
@@ -5,6 +7,7 @@ from mla.neuralnet.activations import softmax
 
 class NaiveBayesClassifier(BaseEstimator):
     """Gaussian Naive Bayes."""
+
     # Binary problem.
     n_classes = 2
 

@@ -1,3 +1,4 @@
+# coding:utf-8
 from scipy.linalg import svd
 import numpy as np
 import logging
@@ -10,7 +11,7 @@ np.random.seed(1000)
 class PCA(BaseEstimator):
     y_required = False
 
-    def __init__(self, n_components, solver='svd'):
+    def __init__(self, n_components, solver="svd"):
         """Principal component analysis (PCA) implementation.
 
         Transforms a dataset of possibly correlated values into n linearly
@@ -39,16 +40,16 @@ class PCA(BaseEstimator):
         X = X.copy()
         X -= self.mean
 
-        if self.solver == 'svd':
+        if self.solver == "svd":
             _, s, Vh = svd(X, full_matrices=True)
-        elif self.solver == 'eigen':
+        elif self.solver == "eigen":
             s, Vh = np.linalg.eig(np.cov(X.T))
             Vh = Vh.T
 
         s_squared = s ** 2
         variance_ratio = s_squared / (s_squared).sum()
-        logging.info('Explained variance ratio: %s' % (variance_ratio[0:self.n_components]))
-        self.components = Vh[0:self.n_components]
+        logging.info("Explained variance ratio: %s" % (variance_ratio[0: self.n_components]))
+        self.components = Vh[0: self.n_components]
 
     def transform(self, X):
         X = X.copy()

@@ -1,3 +1,4 @@
+# coding:utf-8
 import autograd.numpy as np
 
 EPS = 1e-15
@@ -5,6 +6,7 @@ EPS = 1e-15
 
 def unhot(function):
     """Convert one-hot representation into one column."""
+
     def wrapper(actual, predicted):
         if len(actual.shape) > 1 and actual.shape[1] > 1:
             actual = actual.argmax(axis=1)
@@ -64,13 +66,12 @@ def logloss(actual, predicted):
 
 
 def hinge(actual, predicted):
-    return np.mean(np.max(1. - actual * predicted, 0.))
+    return np.mean(np.max(1.0 - actual * predicted, 0.0))
 
 
 def binary_crossentropy(actual, predicted):
     predicted = np.clip(predicted, EPS, 1 - EPS)
-    return np.mean(-np.sum(actual * np.log(predicted) +
-                           (1 - actual) * np.log(1 - predicted)))
+    return np.mean(-np.sum(actual * np.log(predicted) + (1 - actual) * np.log(1 - predicted)))
 
 
 # aliases
@@ -83,5 +84,5 @@ def get_metric(name):
     """Return metric function by name"""
     try:
         return globals()[name]
-    except:
-        raise ValueError('Invalid metric function.')
+    except Exception:
+        raise ValueError("Invalid metric function.")

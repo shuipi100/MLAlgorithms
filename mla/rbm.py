@@ -1,3 +1,4 @@
+# coding:utf-8
 import logging
 
 from mla.base import BaseEstimator
@@ -13,7 +14,6 @@ sigmoid = expit
 References:
 A Practical Guide to Training Restricted Boltzmann Machines https://www.cs.toronto.edu/~hinton/absps/guideTR.pdf
 """
-
 
 
 class RBM(BaseEstimator):
@@ -53,18 +53,18 @@ class RBM(BaseEstimator):
         self.errors = []
 
     def _train(self):
-        '''Use CD-1 training procedure, basically an exact inference for `positive_associations`, 
-        followed by a "non burn-in" block Gibbs Sampling for the `negative_associations`.'''
+        """Use CD-1 training procedure, basically an exact inference for `positive_associations`,
+        followed by a "non burn-in" block Gibbs Sampling for the `negative_associations`."""
 
         for i in range(self.max_epochs):
             error = 0
             for batch in batch_iterator(self.X, batch_size=self.batch_size):
                 positive_hidden = sigmoid(np.dot(batch, self.W) + self.bias_h)
-                hidden_states = self._sample(positive_hidden) # sample hidden state h1
+                hidden_states = self._sample(positive_hidden)  # sample hidden state h1
                 positive_associations = np.dot(batch.T, positive_hidden)
 
                 negative_visible = sigmoid(np.dot(hidden_states, self.W.T) + self.bias_v)
-                negative_visible = self._sample(negative_visible) # use the samped hidden state h1 to sample v1
+                negative_visible = self._sample(negative_visible)  # use the samped hidden state h1 to sample v1
                 negative_hidden = sigmoid(np.dot(negative_visible, self.W) + self.bias_h)
                 negative_associations = np.dot(negative_visible.T, negative_hidden)
 
@@ -76,10 +76,10 @@ class RBM(BaseEstimator):
                 error += np.sum((batch - negative_visible) ** 2)
 
             self.errors.append(error)
-            logging.info('Iteration %s, error %s' % (i, error))
-        logging.debug('Weights: %s' % self.W)
-        logging.debug('Hidden bias: %s' % self.bias_h)
-        logging.debug('Visible bias: %s' % self.bias_v)
+            logging.info("Iteration %s, error %s" % (i, error))
+        logging.debug("Weights: %s" % self.W)
+        logging.debug("Hidden bias: %s" % self.bias_h)
+        logging.debug("Visible bias: %s" % self.bias_v)
 
     def _sample(self, X):
         return X > np.random.random_sample(size=X.shape)

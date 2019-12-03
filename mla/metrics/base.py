@@ -1,3 +1,4 @@
+# coding:utf-8
 import numpy as np
 
 
@@ -9,10 +10,10 @@ def check_data(a, b):
         b = np.array(b)
 
     if type(a) != type(b):
-        raise ValueError('Type mismatch: %s and %s' % (type(a), type(b)))
+        raise ValueError("Type mismatch: %s and %s" % (type(a), type(b)))
 
     if a.size != b.size:
-        raise ValueError('Arrays must be equal in length.')
+        raise ValueError("Arrays must be equal in length.")
     return a, b
 
 

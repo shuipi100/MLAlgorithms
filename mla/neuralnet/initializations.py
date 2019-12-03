@@ -5,6 +5,8 @@ References:
 http://jmlr.org/proceedings/papers/v9/glorot10a/glorot10a.pdf
 
 """
+
+
 def normal(shape, scale=0.5):
     return np.random.normal(size=shape, scale=scale)
 
@@ -43,25 +45,25 @@ def _glorot_fan(shape):
 
 def glorot_normal(shape, **kwargs):
     fan_in, fan_out = _glorot_fan(shape)
-    s = np.sqrt(2. / (fan_in + fan_out))
+    s = np.sqrt(2.0 / (fan_in + fan_out))
     return normal(shape, s)
 
 
 def glorot_uniform(shape, **kwargs):
     fan_in, fan_out = _glorot_fan(shape)
-    s = np.sqrt(6. / (fan_in + fan_out))
+    s = np.sqrt(6.0 / (fan_in + fan_out))
     return uniform(shape, s)
 
 
 def he_normal(shape, **kwargs):
     fan_in, fan_out = _glorot_fan(shape)
-    s = np.sqrt(2. / fan_in)
+    s = np.sqrt(2.0 / fan_in)
     return normal(shape, s)
 
 
 def he_uniform(shape, **kwargs):
     fan_in, fan_out = _glorot_fan(shape)
-    s = np.sqrt(6. / fan_in)
+    s = np.sqrt(6.0 / fan_in)
     return uniform(shape, s)
 
 
@@ -69,5 +71,5 @@ def get_initializer(name):
     """Returns initialization function by the name."""
     try:
         return globals()[name]
-    except:
-        raise ValueError('Invalid initialization function.')
+    except Exception:
+        raise ValueError("Invalid initialization function.")

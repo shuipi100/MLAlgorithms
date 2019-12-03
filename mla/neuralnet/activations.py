@@ -39,9 +39,13 @@ def relu(z):
     return np.maximum(0, z)
 
 
+def leakyrelu(z, a=0.01):
+    return np.maximum(z * a, z)
+
+
 def get_activation(name):
     """Return activation function by name"""
     try:
         return globals()[name]
-    except:
-        raise ValueError('Invalid activation function.')
+    except Exception:
+        raise ValueError("Invalid activation function.")

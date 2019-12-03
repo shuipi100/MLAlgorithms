@@ -23,5 +23,3 @@ X = np.random.uniform(0, 1, (1500, 10))
 rbm = RBM(n_hidden=10, max_epochs=200, batch_size=10, learning_rate=0.1)
 rbm.fit(X)
 print_curve(rbm)
-
-

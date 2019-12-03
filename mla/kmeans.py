@@ -1,3 +1,5 @@
+# coding:utf-8
+
 import random
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -37,9 +39,10 @@ class KMeans(BaseEstimator):
                larger distances between initial clusters to improve convergence
                rates and avoid degenerate cases.
     """
+
     y_required = False
 
-    def __init__(self, K=5, max_iters=100, init='random'):
+    def __init__(self, K=5, max_iters=100, init="random"):
         self.K = K
         self.max_iters = max_iters
         self.clusters = [[] for _ in range(self.K)]
@@ -49,15 +52,14 @@ class KMeans(BaseEstimator):
     def _initialize_centroids(self, init):
         """Set the initial centroids."""
 
-        if init == 'random':
-            self.centroids = [self.X[x] for x in
-                              random.sample(range(self.n_samples), self.K)]
-        elif init == '++':
+        if init == "random":
+            self.centroids = [self.X[x] for x in random.sample(range(self.n_samples), self.K)]
+        elif init == "++":
             self.centroids = [random.choice(self.X)]
             while len(self.centroids) < self.K:
                 self.centroids.append(self._choose_next_center())
         else:
-            raise ValueError('Unknown type of init parameter')
+            raise ValueError("Unknown type of init parameter")
 
     def _predict(self, X=None):
         """Perform clustering on the dataset."""
@@ -117,10 +119,9 @@ class KMeans(BaseEstimator):
 
     def _choose_next_center(self):
         distances = self._dist_from_centers()
-        probs = distances / distances.sum()
-        cumprobs = probs.cumsum()
-        r = random.random()
-        ind = np.where(cumprobs >= r)[0][0]
+        squared_distances = distances ** 2
+        probs = squared_distances / squared_distances.sum()
+        ind = np.random.choice(self.X.shape[0], 1, p=probs)[0]
         return self.X[ind]
 
     def _is_converged(self, centroids_old, centroids):
@@ -132,20 +133,18 @@ class KMeans(BaseEstimator):
 
     def plot(self, ax=None, holdon=False):
         sns.set(style="white")
-
+        palette = sns.color_palette("hls", self.K + 1)
         data = self.X
 
         if ax is None:
             _, ax = plt.subplots()
 
-
-
         for i, index in enumerate(self.clusters):
             point = np.array(data[index]).T
-            ax.scatter(*point, c=sns.color_palette("hls", self.K + 1)[i])
+            ax.scatter(*point, c=[palette[i], ])
 
         for point in self.centroids:
-            ax.scatter(*point, marker='x', linewidths=10)
+            ax.scatter(*point, marker="x", linewidths=10)
 
         if not holdon:
             plt.show()

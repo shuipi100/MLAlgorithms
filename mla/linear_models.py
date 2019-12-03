@@ -1,3 +1,5 @@
+# coding:utf-8
+
 import logging
 
 import autograd.numpy as np
@@ -10,7 +12,7 @@ np.random.seed(1000)
 
 
 class BasicRegression(BaseEstimator):
-    def __init__(self, lr=0.001, penalty='None', C=0.01, tolerance=0.0001, max_iters=1000):
+    def __init__(self, lr=0.001, penalty="None", C=0.01, tolerance=0.0001, max_iters=1000):
         """Basic class for implementing continuous regression estimators which
         are trained with gradient descent optimization on their particular loss
         function.
@@ -48,9 +50,9 @@ class BasicRegression(BaseEstimator):
     def _add_penalty(self, loss, w):
         """Apply regularization to the loss."""
         if self.penalty == "l1":
-            loss += self.C * np.abs(w[:-1]).sum()
+            loss += self.C * np.abs(w[1:]).sum()
         elif self.penalty == "l2":
-            loss += (0.5 * self.C) * (w[:-1] ** 2).mean()
+            loss += (0.5 * self.C) * (w[1:] ** 2).sum()
         return loss
 
     def _cost(self, X, y, theta):
@@ -78,7 +80,7 @@ class BasicRegression(BaseEstimator):
 
     def _train(self):
         self.theta, self.errors = self._gradient_descent()
-        logging.info(' Theta: %s' % self.theta.flatten())
+        logging.info(" Theta: %s" % self.theta.flatten())
 
     def _predict(self, X=None):
         X = self._add_intercept(X)
@@ -87,20 +89,19 @@ class BasicRegression(BaseEstimator):
     def _gradient_descent(self):
         theta = self.theta
         errors = [self._cost(self.X, self.y, theta)]
-
+        # Get derivative of the loss function
+        cost_d = grad(self._loss)
         for i in range(1, self.max_iters + 1):
-            # Get derivative of the loss function
-            cost_d = grad(self._loss)
             # Calculate gradient and update theta
             delta = cost_d(theta)
             theta -= self.lr * delta
 
             errors.append(self._cost(self.X, self.y, theta))
-            logging.info('Iteration %s, error %s' % (i, errors[i]))
+            logging.info("Iteration %s, error %s" % (i, errors[i]))
 
             error_diff = np.linalg.norm(errors[i - 1] - errors[i])
             if error_diff < self.tolerance:
-                logging.info('Convergence has reached.')
+                logging.info("Convergence has reached.")
                 break
         return theta, errors
 
@@ -128,7 +129,7 @@ class LogisticRegression(BasicRegression):
 
     @staticmethod
     def sigmoid(x):
-        return 0.5 * (np.tanh(x) + 1)
+        return 0.5 * (np.tanh(0.5 * x) + 1)
 
     def _predict(self, X=None):
         X = self._add_intercept(X)
